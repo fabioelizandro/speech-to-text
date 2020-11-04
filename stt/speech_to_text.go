@@ -25,6 +25,11 @@ func (s SpeechToText) Transcript(audio AudioSource) (Transcript, error) {
 	req := &speechpb.LongRunningRecognizeRequest{
 		Config: &speechpb.RecognitionConfig{
 			LanguageCode: "pt-BR",
+			DiarizationConfig: &speechpb.SpeakerDiarizationConfig{
+				EnableSpeakerDiarization: true,
+				MinSpeakerCount:          2,
+				MaxSpeakerCount:          2,
+			},
 		},
 		Audio: &speechpb.RecognitionAudio{
 			AudioSource: &speechpb.RecognitionAudio_Uri{Uri: audio.URI()},

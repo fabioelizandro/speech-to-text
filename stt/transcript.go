@@ -17,17 +17,19 @@ func NewTranscript(results []*speechpb.SpeechRecognitionResult) Transcript {
 }
 
 func (t Transcript) Report(filename string) error {
-	report := strings.Builder{}
-	for _, result := range t.results {
-		report.WriteString(result.Alternatives[0].Transcript)
-		report.WriteString("\n")
-	}
-
-	return ioutil.WriteFile(filename, []byte(report.String()), 644)
+	return ioutil.WriteFile(filename, []byte(t.content()), 644)
 }
 
 func (t Transcript) Print() {
+	fmt.Print(t.content())
+}
+
+func (t Transcript) content() string {
+	content := strings.Builder{}
 	for _, result := range t.results {
-		fmt.Printf(`"%s"\n`, result.Alternatives[0].Transcript)
+		content.WriteString(result.Alternatives[0].Transcript)
+		content.WriteString("\n")
 	}
+
+	return content.String()
 }
