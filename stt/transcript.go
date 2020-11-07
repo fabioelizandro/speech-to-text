@@ -3,6 +3,7 @@ package stt
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	speechpb "google.golang.org/genproto/googleapis/cloud/speech/v1"
 )
@@ -28,6 +29,16 @@ func (t Transcript) SpeakerDiarization() *SpeakerDiarization {
 	}
 
 	return speakerDiarization
+}
+
+func (t Transcript) String() string {
+	content := strings.Builder{}
+	for _, result := range t.results {
+		content.WriteString(result.Alternatives[0].Transcript)
+		content.WriteString("\n\n")
+	}
+
+	return strings.TrimSpace(content.String())
 }
 
 func (t Transcript) MarshalJSON() ([]byte, error) {

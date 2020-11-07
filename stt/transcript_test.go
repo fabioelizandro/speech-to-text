@@ -34,6 +34,16 @@ func Test_returns_empty_speaker_diarization_when_results_are_empty(t *testing.T)
 	assert.Equal(t, expectedDiarization, transcript.SpeakerDiarization())
 }
 
+func Test_transcribes_without_speaker_diarization(t *testing.T) {
+	transcript := stt.Transcript{}
+	assert.NoError(t, json.Unmarshal([]byte(transcriptExample), &transcript))
+
+	expected := `Hello there How you?
+
+I'm good Lucky you`
+	assert.Equal(t, expected, transcript.String())
+}
+
 const transcriptExample = `
 [
   {

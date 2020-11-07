@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -8,19 +9,10 @@ import (
 	"github.com/fabioelizandro/speech-to-text/stt"
 )
 
-const usage = `Usage: transcript <audiofile>
-
-Audio file must be a GSC URI encoded with FLAC or WAV mono.
-
-NOTE: files with the same name won't hit Google's API to avoid unwanted charges. Instead, the application will cache all
-transcripts in your OS cache directory under the folder "stt-cli".
-`
-
 func main() {
-	if len(os.Args) < 2 {
-		_, _ = fmt.Fprint(os.Stderr, usage)
-		os.Exit(2)
-	}
+	file := flag.String("f", "", "Audio file must be a GSC URI encoded with FLAC or WAV mono.")
+	speakerDiarization := flag.Bool("d", false, "Enables speaker diarization")
+	flag.Parse()
 
 	cacheDir, err := ensureCacheDir()
 	if err != nil {
@@ -28,13 +20,17 @@ func main() {
 	}
 
 	speechToText := stt.NewCachedSpeechToText(stt.NewSpeechToText(), cacheDir)
-	transcript, err := speechToText.Transcript(stt.NewAudioSource(os.Args[1]))
+	transcript, err := speechToText.Transcript(stt.NewAudioSource(*file))
 	if err != nil {
 		panic(err)
 
 	}
 
-	fmt.Printf("\n\n%s\n", transcript.SpeakerDiarization().String())
+	if *speakerDiarization {
+		fmt.Printf("\n\n%s\n", transcript.SpeakerDiarization().String())
+	} else {
+		fmt.Printf("\n\n%s\n", transcript.String())
+	}
 }
 
 func ensureCacheDir() (string, error) {
