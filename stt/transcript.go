@@ -1,6 +1,7 @@
 package stt
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"strings"
@@ -22,6 +23,21 @@ func (t Transcript) Report(filename string) error {
 
 func (t Transcript) Print() {
 	fmt.Print(t.content())
+}
+
+func (t Transcript) MarshalJSON() ([]byte, error) {
+	return json.Marshal(t.results)
+}
+
+func (t *Transcript) UnmarshalJSON(data []byte) error {
+	var results []*speechpb.SpeechRecognitionResult
+	err := json.Unmarshal(data, &results)
+	if err != nil {
+		return err
+	}
+
+	t.results = results
+	return nil
 }
 
 func (t Transcript) content() string {
