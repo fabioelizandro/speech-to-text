@@ -16,8 +16,13 @@ func NewTranscript(results []*speechpb.SpeechRecognitionResult) Transcript {
 }
 
 func (t Transcript) SpeakerDiarization() *SpeakerDiarization {
-	speakerDiarizationWords := t.results[len(t.results)-1].Alternatives[0].Words
 	speakerDiarization := NewSpeakerDiarization()
+
+	if len(t.results) == 0 {
+		return speakerDiarization
+	}
+
+	speakerDiarizationWords := t.results[len(t.results)-1].Alternatives[0].Words
 	for _, word := range speakerDiarizationWords {
 		speakerDiarization.AddWord(fmt.Sprintf("speaker%d", word.SpeakerTag), word.Word)
 	}

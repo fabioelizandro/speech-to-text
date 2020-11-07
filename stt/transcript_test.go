@@ -6,6 +6,7 @@ import (
 
 	"github.com/fabioelizandro/speech-to-text/stt"
 	"github.com/stretchr/testify/assert"
+	speechpb "google.golang.org/genproto/googleapis/cloud/speech/v1"
 )
 
 func Test_transcribes_using_speaker_diarization(t *testing.T) {
@@ -25,13 +26,30 @@ func Test_transcribes_using_speaker_diarization(t *testing.T) {
 	assert.Equal(t, expectedDiarization, transcript.SpeakerDiarization())
 }
 
+func Test_returns_empty_speaker_diarization_when_results_are_empty(t *testing.T) {
+	transcript := stt.NewTranscript([]*speechpb.SpeechRecognitionResult{})
+
+	expectedDiarization := stt.NewSpeakerDiarization()
+
+	assert.Equal(t, expectedDiarization, transcript.SpeakerDiarization())
+}
+
 const transcriptExample = `
 [
   {
     "alternatives": [
       {
-        "transcript": "Some sentence to be ignored.",
+        "transcript": "Hello there How you?",
         "confidence": 0.9225482,
+        "words": []
+      }
+    ]
+  },
+  {
+    "alternatives": [
+      {
+        "transcript": "I'm good Lucky you",
+        "confidence": 0.9115471,
         "words": []
       }
     ]
