@@ -12,14 +12,17 @@ func Test_transcribes_using_speaker_diarization(t *testing.T) {
 	transcript := stt.Transcript{}
 	assert.NoError(t, json.Unmarshal([]byte(transcriptExample), &transcript))
 
-	expected := `speaker1: Hello there
+	expectedDiarization := stt.NewSpeakerDiarization()
+	expectedDiarization.AddWord("speaker1", "Hello")
+	expectedDiarization.AddWord("speaker1", "there")
+	expectedDiarization.AddWord("speaker2", "How")
+	expectedDiarization.AddWord("speaker2", "you?")
+	expectedDiarization.AddWord("speaker1", "I'm")
+	expectedDiarization.AddWord("speaker1", "good")
+	expectedDiarization.AddWord("speaker2", "Lucky")
+	expectedDiarization.AddWord("speaker2", "you")
 
-speaker2: How you?
-
-speaker1: I'm good
-
-speaker2: Lucky you`
-	assert.Equal(t, expected, transcript.String())
+	assert.Equal(t, expectedDiarization, transcript.SpeakerDiarization())
 }
 
 const transcriptExample = `

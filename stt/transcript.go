@@ -15,14 +15,14 @@ func NewTranscript(results []*speechpb.SpeechRecognitionResult) Transcript {
 	return Transcript{results: results}
 }
 
-func (t Transcript) String() string {
+func (t Transcript) SpeakerDiarization() *SpeakerDiarization {
 	speakerDiarizationWords := t.results[len(t.results)-1].Alternatives[0].Words
 	speakerDiarization := NewSpeakerDiarization()
 	for _, word := range speakerDiarizationWords {
 		speakerDiarization.AddWord(fmt.Sprintf("speaker%d", word.SpeakerTag), word.Word)
 	}
 
-	return speakerDiarization.String()
+	return speakerDiarization
 }
 
 func (t Transcript) MarshalJSON() ([]byte, error) {

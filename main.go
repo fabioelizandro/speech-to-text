@@ -34,7 +34,7 @@ func main() {
 
 	}
 
-	fmt.Printf("\n\n%s\n", transcript.String())
+	fmt.Printf("\n\n%s\n", transcript.SpeakerDiarization().String())
 }
 
 func ensureCacheDir() (string, error) {
