@@ -34,7 +34,7 @@ func main() {
 
 	}
 
-	transcript.Print()
+	fmt.Printf("\n\n%s\n", transcript.String())
 }
 
 func ensureCacheDir() (string, error) {

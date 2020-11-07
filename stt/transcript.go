@@ -3,8 +3,6 @@ package stt
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"strings"
 
 	speechpb "google.golang.org/genproto/googleapis/cloud/speech/v1"
 )
@@ -17,12 +15,14 @@ func NewTranscript(results []*speechpb.SpeechRecognitionResult) Transcript {
 	return Transcript{results: results}
 }
 
-func (t Transcript) Report(filename string) error {
-	return ioutil.WriteFile(filename, []byte(t.content()), 644)
-}
+func (t Transcript) String() string {
+	speakerDiarizationWords := t.results[len(t.results)-1].Alternatives[0].Words
+	speakerDiarization := NewSpeakerDiarization()
+	for _, word := range speakerDiarizationWords {
+		speakerDiarization.AddWord(fmt.Sprintf("speaker%d", word.SpeakerTag), word.Word)
+	}
 
-func (t Transcript) Print() {
-	fmt.Print(t.content())
+	return speakerDiarization.String()
 }
 
 func (t Transcript) MarshalJSON() ([]byte, error) {
@@ -38,14 +38,4 @@ func (t *Transcript) UnmarshalJSON(data []byte) error {
 
 	t.results = results
 	return nil
-}
-
-func (t Transcript) content() string {
-	content := strings.Builder{}
-	for _, result := range t.results {
-		content.WriteString(result.Alternatives[0].Transcript)
-		content.WriteString("\n")
-	}
-
-	return content.String()
 }
