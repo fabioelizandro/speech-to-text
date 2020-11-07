@@ -24,7 +24,10 @@ func NewSpeechToText() SpeechToText {
 func (s SpeechToText) Transcript(audio AudioSource) (Transcript, error) {
 	req := &speechpb.LongRunningRecognizeRequest{
 		Config: &speechpb.RecognitionConfig{
-			LanguageCode: "pt-BR",
+			LanguageCode:               "pt-BR",
+			EnableWordTimeOffsets:      true,
+			EnableAutomaticPunctuation: true,
+			MaxAlternatives:            1,
 			DiarizationConfig: &speechpb.SpeakerDiarizationConfig{
 				EnableSpeakerDiarization: true,
 				MinSpeakerCount:          2,
