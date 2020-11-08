@@ -38,10 +38,16 @@ func Test_transcribes_without_speaker_diarization(t *testing.T) {
 	transcript := stt.Transcript{}
 	assert.NoError(t, json.Unmarshal([]byte(transcriptExample), &transcript))
 
-	expected := `Hello there How you?
+	expected := `[0s]: Hello there How you?
 
-I'm good Lucky you`
+[5s]: I'm good Lucky you`
 	assert.Equal(t, expected, transcript.String())
+}
+
+func Test_returns_empty_string_for_empty_results(t *testing.T) {
+	transcript := stt.NewTranscript([]*speechpb.SpeechRecognitionResult{})
+
+	assert.Equal(t, "", transcript.String())
 }
 
 const transcriptExample = `
@@ -51,7 +57,42 @@ const transcriptExample = `
       {
         "transcript": "Hello there How you?",
         "confidence": 0.9225482,
-        "words": []
+        "words": [
+          {
+            "start_time": {},
+            "end_time": {
+              "seconds": 3
+            },
+            "word": "Hello"
+          },
+          {
+            "start_time": {
+              "seconds": 3
+            },
+            "end_time": {
+              "seconds": 3
+            },
+            "word": "there"
+          },
+          {
+            "start_time": {
+              "seconds": 3
+            },
+            "end_time": {
+              "seconds": 4
+            },
+            "word": "How"
+          },
+          {
+            "start_time": {
+              "seconds": 4
+            },
+            "end_time": {
+              "seconds": 5
+            },
+            "word": "you?"
+          }
+        ]
       }
     ]
   },
@@ -60,7 +101,44 @@ const transcriptExample = `
       {
         "transcript": "I'm good Lucky you",
         "confidence": 0.9115471,
-        "words": []
+        "words": [
+          {
+            "start_time": {
+              "seconds": 5
+            },
+            "end_time": {
+              "seconds": 5
+            },
+            "word": "I'm"
+          },
+          {
+            "start_time": {
+              "seconds": 6
+            },
+            "end_time": {
+              "seconds": 6
+            },
+            "word": "good"
+          },
+          {
+            "start_time": {
+              "seconds": 6
+            },
+            "end_time": {
+              "seconds": 7
+            },
+            "word": "Lucky"
+          },
+          {
+            "start_time": {
+              "seconds": 7
+            },
+            "end_time": {
+              "seconds": 8
+            },
+            "word": "you"
+          }
+        ]
       }
     ]
   },

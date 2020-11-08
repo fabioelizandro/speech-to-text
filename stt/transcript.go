@@ -32,9 +32,18 @@ func (t Transcript) SpeakerDiarization() *SpeakerDiarization {
 }
 
 func (t Transcript) String() string {
+	if len(t.results) == 0 {
+		return ""
+	}
+
 	content := strings.Builder{}
-	for _, result := range t.results {
-		content.WriteString(result.Alternatives[0].Transcript)
+	for _, result := range t.results[0 : len(t.results)-1] {
+		bestAlternative := result.Alternatives[0]
+
+		transcript := bestAlternative.Transcript
+		startAt := bestAlternative.Words[0].StartTime.AsDuration()
+
+		content.WriteString(fmt.Sprintf("[%s]: %s", startAt, transcript))
 		content.WriteString("\n\n")
 	}
 
