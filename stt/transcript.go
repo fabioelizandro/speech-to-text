@@ -43,7 +43,7 @@ func (t Transcript) String() string {
 		transcript := bestAlternative.Transcript
 		startAt := bestAlternative.Words[0].StartTime.AsDuration()
 
-		content.WriteString(fmt.Sprintf("[%s]: %s", startAt, transcript))
+		content.WriteString(fmt.Sprintf("[%s] %s", startAt, transcript))
 		content.WriteString("\n\n")
 	}
 

@@ -38,9 +38,9 @@ func Test_transcribes_without_speaker_diarization(t *testing.T) {
 	transcript := stt.Transcript{}
 	assert.NoError(t, json.Unmarshal([]byte(transcriptExample), &transcript))
 
-	expected := `[0s]: Hello there How you?
+	expected := `[0s] Hello there How you?
 
-[5s]: I'm good Lucky you`
+[5s] I'm good Lucky you`
 	assert.Equal(t, expected, transcript.String())
 }
 
