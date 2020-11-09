@@ -7,6 +7,12 @@
 bin/transcript: main.go stt
 	@go build -o $@
 
+bin/transcript64.exe: main.go stt
+	@GOOS=windows GOARCH=amd64 go build -o $@
+
+bin/transcript32.exe: main.go stt
+	@GOOS=windows GOARCH=386 go build -o $@
+
 help:
 	@grep '^[a-zA-Z]' $(MAKEFILE_LIST) | sort | awk -F ':.*?## ' 'NF==2 {printf "\033[36m  %-25s\033[0m %s\n", $$1, $$2}'
 
@@ -22,4 +28,4 @@ run: ## run application, use ARGS variable to send arguments. Usage: make run AR
 	@GOOGLE_APPLICATION_CREDENTIALS="$(PWD)/credentials.json" go run ./main.go $(ARGS)
 
 .PHONY: build
-build: bin/transcript ## Build bin folder
+build: bin/transcript bin/transcript64.exe bin/transcript32.exe ## Build bin folder
