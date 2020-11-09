@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 
 	speechpb "google.golang.org/genproto/googleapis/cloud/speech/v1"
 )
@@ -45,7 +46,7 @@ func (t Transcript) String() string {
 		bestAlternative := result.Alternatives[0]
 
 		transcript := bestAlternative.Transcript
-		startAt := bestAlternative.Words[0].StartTime.AsDuration()
+		startAt := bestAlternative.Words[0].StartTime.AsDuration().Truncate(time.Second)
 
 		content.WriteString(fmt.Sprintf("[%s] %s", startAt, transcript))
 		content.WriteString("\n\n")

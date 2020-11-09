@@ -105,7 +105,8 @@ const transcriptExample = `
         "words": [
           {
             "start_time": {
-              "seconds": 5
+              "seconds": 5,
+              "nanos": 500000000
             },
             "end_time": {
               "seconds": 5
