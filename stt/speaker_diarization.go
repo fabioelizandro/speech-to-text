@@ -3,6 +3,7 @@ package stt
 import (
 	"fmt"
 	"strings"
+	"time"
 )
 
 type SpeakerDiarization struct {
@@ -10,8 +11,9 @@ type SpeakerDiarization struct {
 }
 
 type speakerQuote struct {
-	speaker string
-	quote   string
+	speaker  string
+	quote    string
+	duration time.Duration
 }
 
 func NewSpeakerDiarization() *SpeakerDiarization {
@@ -20,16 +22,16 @@ func NewSpeakerDiarization() *SpeakerDiarization {
 	}
 }
 
-func (d *SpeakerDiarization) AddWord(speaker string, word string) {
+func (d *SpeakerDiarization) AddWord(speaker string, word string, duration time.Duration) {
 	if len(d.quotes) == 0 {
-		d.quotes = append(d.quotes, &speakerQuote{speaker: speaker, quote: word})
+		d.quotes = append(d.quotes, &speakerQuote{speaker: speaker, quote: word, duration: duration})
 		return
 	}
 
 	lastSpeakerQuote := d.quotes[len(d.quotes)-1]
 
 	if lastSpeakerQuote.speaker != speaker {
-		d.quotes = append(d.quotes, &speakerQuote{speaker: speaker, quote: word})
+		d.quotes = append(d.quotes, &speakerQuote{speaker: speaker, quote: word, duration: duration})
 		return
 	}
 
@@ -47,5 +49,5 @@ func (d *SpeakerDiarization) String() string {
 }
 
 func (q speakerQuote) string() string {
-	return fmt.Sprintf("%s: %s", q.speaker, q.quote)
+	return fmt.Sprintf("[%s] %s: %s", q.duration.Truncate(time.Second), q.speaker, q.quote)
 }

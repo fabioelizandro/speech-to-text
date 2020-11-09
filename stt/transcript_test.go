@@ -3,6 +3,7 @@ package stt_test
 import (
 	"encoding/json"
 	"testing"
+	"time"
 
 	"github.com/fabioelizandro/speech-to-text/stt"
 	"github.com/stretchr/testify/assert"
@@ -14,14 +15,14 @@ func Test_transcribes_using_speaker_diarization(t *testing.T) {
 	assert.NoError(t, json.Unmarshal([]byte(transcriptExample), &transcript))
 
 	expectedDiarization := stt.NewSpeakerDiarization()
-	expectedDiarization.AddWord("speaker1", "Hello")
-	expectedDiarization.AddWord("speaker1", "there")
-	expectedDiarization.AddWord("speaker2", "How")
-	expectedDiarization.AddWord("speaker2", "you?")
-	expectedDiarization.AddWord("speaker1", "I'm")
-	expectedDiarization.AddWord("speaker1", "good")
-	expectedDiarization.AddWord("speaker2", "Lucky")
-	expectedDiarization.AddWord("speaker2", "you")
+	expectedDiarization.AddWord("speaker1", "Hello", 67*time.Second)
+	expectedDiarization.AddWord("speaker1", "there", 67*time.Second)
+	expectedDiarization.AddWord("speaker2", "How", 69*time.Second)
+	expectedDiarization.AddWord("speaker2", "you?", 71*time.Second)
+	expectedDiarization.AddWord("speaker1", "I'm", 71*time.Second)
+	expectedDiarization.AddWord("speaker1", "good", 76*time.Second)
+	expectedDiarization.AddWord("speaker2", "Lucky", 83*time.Second)
+	expectedDiarization.AddWord("speaker2", "you", 86*time.Second)
 
 	assert.Equal(t, expectedDiarization, transcript.SpeakerDiarization())
 }
@@ -148,24 +149,20 @@ const transcriptExample = `
         "words": [
           {
             "start_time": {
-              "seconds": 67,
-              "nanos": 600000000
+              "seconds": 67
             },
             "end_time": {
-              "seconds": 67,
-              "nanos": 900000000
+              "seconds": 67
             },
             "word": "Hello",
             "speaker_tag": 1
           },
           {
             "start_time": {
-              "seconds": 67,
-              "nanos": 900000000
+              "seconds": 67
             },
             "end_time": {
-              "seconds": 68,
-              "nanos": 100000000
+              "seconds": 68
             },
             "word": "there",
             "speaker_tag": 1
@@ -175,68 +172,57 @@ const transcriptExample = `
               "seconds": 69
             },
             "end_time": {
-              "seconds": 71,
-              "nanos": 100000000
+              "seconds": 71
             },
             "word": "How",
             "speaker_tag": 2
           },
           {
             "start_time": {
-              "seconds": 71,
-              "nanos": 100000000
+              "seconds": 71
             },
             "end_time": {
-              "seconds": 71,
-              "nanos": 400000000
+              "seconds": 71
             },
             "word": "you?",
             "speaker_tag": 2
           },
           {
             "start_time": {
-              "seconds": 71,
-              "nanos": 900000000
+              "seconds": 71
             },
             "end_time": {
-              "seconds": 76,
-              "nanos": 200000000
+              "seconds": 76
             },
             "word": "I'm",
             "speaker_tag": 1
           },
           {
             "start_time": {
-              "seconds": 76,
-              "nanos": 200000000
+              "seconds": 76
             },
             "end_time": {
-              "seconds": 77,
-              "nanos": 100000000
+              "seconds": 77
             },
             "word": "good",
             "speaker_tag": 1
           },
           {
             "start_time": {
-              "seconds": 83,
-              "nanos": 800000000
+              "seconds": 83
             },
             "end_time": {
-              "seconds": 86,
-              "nanos": 400000000
+              "seconds": 86
             },
             "word": "Lucky",
             "speaker_tag": 2
           },
           {
             "start_time": {
-              "seconds": 86,
-              "nanos": 400000000
+              "seconds": 86
             },
             "end_time": {
-              "seconds": 86,
-              "nanos": 500000000
+              "seconds": 86
             },
             "word": "you",
             "speaker_tag": 2

@@ -25,7 +25,11 @@ func (t Transcript) SpeakerDiarization() *SpeakerDiarization {
 
 	speakerDiarizationWords := t.results[len(t.results)-1].Alternatives[0].Words
 	for _, word := range speakerDiarizationWords {
-		speakerDiarization.AddWord(fmt.Sprintf("speaker%d", word.SpeakerTag), word.Word)
+		speakerDiarization.AddWord(
+			fmt.Sprintf("speaker%d", word.SpeakerTag),
+			word.Word,
+			word.StartTime.AsDuration(),
+		)
 	}
 
 	return speakerDiarization
