@@ -10,21 +10,37 @@ import (
 )
 
 type Transcript struct {
-	results []*speechpb.SpeechRecognitionResult
+	result transcriptResult
+}
+
+type transcriptResult interface {
+	paragraphs() []*speechpb.SpeechRecognitionResult
+	diarization() []*speechpb.WordInfo
+	export() []*speechpb.SpeechRecognitionResult
+}
+
+type successfulResult struct {
+	underlyingResult []*speechpb.SpeechRecognitionResult
+}
+
+type emptyResult struct {
 }
 
 func NewTranscript(results []*speechpb.SpeechRecognitionResult) Transcript {
-	return Transcript{results: results}
+	return Transcript{result: newTranscriptResult(results)}
+}
+
+func newTranscriptResult(results []*speechpb.SpeechRecognitionResult) transcriptResult {
+	if len(results) == 0 {
+		return &emptyResult{}
+	}
+
+	return &successfulResult{underlyingResult: results}
 }
 
 func (t Transcript) SpeakerDiarization() *SpeakerDiarization {
 	speakerDiarization := NewSpeakerDiarization()
-
-	if len(t.results) == 0 {
-		return speakerDiarization
-	}
-
-	speakerDiarizationWords := t.results[len(t.results)-1].Alternatives[0].Words
+	speakerDiarizationWords := t.result.diarization()
 	for _, word := range speakerDiarizationWords {
 		speakerDiarization.AddWord(
 			fmt.Sprintf("speaker%d", word.SpeakerTag),
@@ -37,12 +53,8 @@ func (t Transcript) SpeakerDiarization() *SpeakerDiarization {
 }
 
 func (t Transcript) String() string {
-	if len(t.results) == 0 {
-		return ""
-	}
-
 	content := strings.Builder{}
-	for _, result := range t.results[0 : len(t.results)-1] {
+	for _, result := range t.result.paragraphs() {
 		bestAlternative := result.Alternatives[0]
 
 		transcript := bestAlternative.Transcript
@@ -56,7 +68,7 @@ func (t Transcript) String() string {
 }
 
 func (t Transcript) MarshalJSON() ([]byte, error) {
-	return json.Marshal(t.results)
+	return json.Marshal(t.result.export())
 }
 
 func (t *Transcript) UnmarshalJSON(data []byte) error {
@@ -66,6 +78,30 @@ func (t *Transcript) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	t.results = results
+	t.result = newTranscriptResult(results)
 	return nil
+}
+
+func (s successfulResult) paragraphs() []*speechpb.SpeechRecognitionResult {
+	return s.underlyingResult[0 : len(s.underlyingResult)-1]
+}
+
+func (s successfulResult) diarization() []*speechpb.WordInfo {
+	return s.underlyingResult[len(s.underlyingResult)-1].Alternatives[0].Words
+}
+
+func (s successfulResult) export() []*speechpb.SpeechRecognitionResult {
+	return s.underlyingResult
+}
+
+func (e emptyResult) paragraphs() []*speechpb.SpeechRecognitionResult {
+	return []*speechpb.SpeechRecognitionResult{}
+}
+
+func (e emptyResult) diarization() []*speechpb.WordInfo {
+	return []*speechpb.WordInfo{}
+}
+
+func (e emptyResult) export() []*speechpb.SpeechRecognitionResult {
+	return []*speechpb.SpeechRecognitionResult{}
 }
