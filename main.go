@@ -1,11 +1,14 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 
+	speech "cloud.google.com/go/speech/apiv1"
 	"github.com/fabioelizandro/speech-to-text/stt"
 )
 
@@ -18,7 +21,12 @@ func main() {
 		panic(err)
 	}
 
-	speechToText := stt.NewCachedSpeechToText(stt.NewSpeechToText(), cacheDir)
+	googleSpeech, err := speech.NewClient(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	speechToText := stt.NewCachedSpeechToText(stt.NewSpeechToText(googleSpeech), cacheDir)
 	transcript, err := speechToText.Transcript(stt.NewAudioSource(*file))
 	if err != nil {
 		panic(err)

@@ -2,7 +2,6 @@ package stt
 
 import (
 	"context"
-	"log"
 
 	speech "cloud.google.com/go/speech/apiv1"
 	speechpb "google.golang.org/genproto/googleapis/cloud/speech/v1"
@@ -12,12 +11,7 @@ type SpeechToText struct {
 	client *speech.Client
 }
 
-func NewSpeechToText() SpeechToText {
-	client, err := speech.NewClient(context.Background())
-	if err != nil {
-		log.Fatal(err)
-	}
-
+func NewSpeechToText(client *speech.Client) SpeechToText {
 	return SpeechToText{client: client}
 }
 
