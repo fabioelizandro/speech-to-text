@@ -11,7 +11,6 @@ import (
 
 func main() {
 	file := flag.String("f", "", "Audio file must be a GSC URI encoded with FLAC or WAV mono.")
-	speakerDiarization := flag.Bool("d", false, "Enables speaker diarization")
 	flag.Parse()
 
 	cacheDir, err := ensureCacheDir()
@@ -26,11 +25,7 @@ func main() {
 
 	}
 
-	if *speakerDiarization {
-		fmt.Printf("\n\n%s\n", transcript.SpeakerDiarization().String())
-	} else {
-		fmt.Printf("\n\n%s\n", transcript.String())
-	}
+	fmt.Printf("\n\n%s\n", transcript.SpeakerDiarization().String())
 }
 
 func ensureCacheDir() (string, error) {
