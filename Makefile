@@ -5,18 +5,19 @@
 	@chmod +x $@
 
 bin/transcript: main.go stt
-	@go build -o $@
+	@go build -ldflags="-s -w" -o $@
 
 bin/transcript64.exe: main.go stt
-	@GOOS=windows GOARCH=amd64 go build -o $@
+	@GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o $@
 
 bin/transcript32.exe: main.go stt
-	@GOOS=windows GOARCH=386 go build -o $@
+	@GOOS=windows GOARCH=386 go build -ldflags="-s -w" -o $@
 
 releases/release.tar.gz: bin/transcript bin/transcript64.exe bin/transcript32.exe
 	@mkdir -p releases/
 	@tar --exclude '*.tar.gz' -zcf $@ bin
 
+.PHONY: help
 help:
 	@grep '^[a-zA-Z]' $(MAKEFILE_LIST) | sort | awk -F ':.*?## ' 'NF==2 {printf "\033[36m  %-25s\033[0m %s\n", $$1, $$2}'
 
