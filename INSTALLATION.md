@@ -4,7 +4,7 @@ You will need tree things in order two transcribe audios
 
 1) `ffmpeg` a simple yet powerful audio converter
 2) `transcript` a small program to use Google speech to text API
-3) `Google cloud credenctials` you'll need this for communicate with Google speech to text API
+3) `google cloud credenctials` you'll need this for communicate with Google speech to text API
 
 ## ffmpeg
 
@@ -26,7 +26,7 @@ Now you have to do the exact same process as you did for `ffmpeg`, which is:
 4) Add `C://transcript/bin` folder the environment variables like you did for `C://ffmpeg/bin`
 5) Lastly, open `C://transcript/bin` and rename `transcript32.exe` to `transcript.exe` if your system is 32 bits. Or, rename `transcript64.exe` to `transcript.exe` if 64 bits.
 
-## Google cloud credentials
+## google cloud credentials
 
 Now that you've got all installed, you'll need to provide the Google cloud credentials to `transcript`
 
