@@ -1,6 +1,6 @@
 # Installation
 
-You will need tree things in order two transcribe audios
+You will need tree things in order to transcribe audios
 
 1) `ffmpeg` a simple yet powerful audio converter
 2) `transcript` a small program to use Google speech to text API
