@@ -1,11 +1,11 @@
-# Speech to text
+# Speech To Text
 
 Small CLI to interact with Goggle Speech-to-Text API.
 
-## Development Setup
+## How to use
 
-    make setup
-    
-## Building and testing
+[User manual](./MANUAL.md)
 
-    make help #this prints all commands needed for building and testing
+## Contributing
+
+[Contributing guide](./CONTRIBUTING.md)
