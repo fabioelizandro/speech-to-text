@@ -14,9 +14,9 @@ ffmpeg -i my-video.mp4 -ac 1 -f flac -vn music.mp3
 
 ## Uploading file to Google
 
-⚠️ NOTE ⚠️ : It's that you keep your files with meaningful names to avoid name collisions. <br>
-A suggested format could be `interview-$subject-$date.flac` where you replace $subject with the interviewee name<br>
-and $date with the date when it happened.
+⚠️ NOTE ⚠️ : It's important that you keep your files with meaningful names to avoid name collisions. <br>
+I suggest a format like `interview-$subject-$date.flac` where `$subject` is the interviewee name<br>
+and `$date` is when it happened.
 
 <hr>
 
@@ -29,7 +29,7 @@ Once the upload is complete, copy the file URL, it will look like `gs://.../my-c
 transcript -f gs://.../my-coverted-audio.flac
 ```
 
-In case you want to send this to a file just do:
+For saving the transcript to a file do:
 
 ```shell
 transcript -f gs://.../my-coverted-audio.flac > my-transcript.txt
