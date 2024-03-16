@@ -31,3 +31,7 @@ run: ## run application, use ARGS variable to send arguments. Usage: make run AR
 
 .PHONY: build
 build: releases/release.tar.gz ## Build bin folder and release package
+
+.PHONY: ci
+ci:
+	git pull --autostash && make test && git push
