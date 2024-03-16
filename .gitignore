@@ -2,3 +2,4 @@ bin
 releases
 .DS_Store
 credentials.json
+.idea

@@ -5,16 +5,30 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"path/filepath"
 
 	speech "cloud.google.com/go/speech/apiv1"
 	"github.com/fabioelizandro/speech-to-text/stt"
+	"github.com/fabioelizandro/speech-to-text/web"
 )
 
 func main() {
 	file := flag.String("f", "", "Audio file must be a GSC URI encoded with FLAC or WAV mono.")
+	webModeOn := flag.Bool("w", false, "Webserver mode")
 	flag.Parse()
+
+	if *webModeOn {
+		fmt.Println("Web mode on...")
+
+		err := http.ListenAndServe("localhost:8080", web.Router())
+		if err != nil {
+			panic(err)
+		}
+
+		return
+	}
 
 	cacheDir, err := ensureCacheDir()
 	if err != nil {
