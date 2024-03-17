@@ -10,10 +10,15 @@ import (
 //go:embed views/*.gohtml
 var htmlViews embed.FS
 
-func RenderHTML(w io.Writer, templ Template) error {
-	// We can use memoization for the template parsing logic
+type Renderer struct {
+}
+
+func NewRenderer() *Renderer {
+	return &Renderer{}
+}
+
+func (r *Renderer) RenderHTML(w io.Writer, templ Template) error {
 	templates := template.Must(template.ParseFS(htmlViews, "views/_*.gohtml", fmt.Sprintf("views/%s", templ._name())))
 
 	return templates.ExecuteTemplate(w, templ._name(), templ)
-
 }

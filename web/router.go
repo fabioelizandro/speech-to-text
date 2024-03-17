@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/fabioelizandro/speech-to-text/webtmpl"
 	"github.com/julienschmidt/httprouter"
 )
 
-func Router() http.Handler {
+func Router(renderer *webtmpl.Renderer) http.Handler {
 	router := httprouter.New()
-	router.GET("/hello/:name", handleRouteError(helloRoute))
+	router.GET("/", handleRouteError(indexRouter(renderer)))
 
 	return router
 }

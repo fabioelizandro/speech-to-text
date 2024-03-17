@@ -8,19 +8,20 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/fabioelizandro/speech-to-text/web"
+	"github.com/fabioelizandro/speech-to-text/webtmpl"
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_hello_route(t *testing.T) {
+func Test_index_route(t *testing.T) {
 	t.Run("renders hello with user name", func(t *testing.T) {
-		serve := createServer(web.Router())
+		serve := createServer(web.Router(webtmpl.NewRenderer()))
 
-		response := serve(httptest.NewRequest("GET", "/hello/john", strings.NewReader("")))
+		response := serve(httptest.NewRequest("GET", "/", strings.NewReader("")))
 
 		doc, err := goquery.NewDocumentFromReader(response.Body)
 		assert.NoError(t, err)
 
 		assert.Equal(t, http.StatusOK, response.Code)
-		assert.Equal(t, "Hello john =)", doc.Find("h1").Text())
+		assert.Equal(t, "Speech To Text", doc.Find("h1").Text())
 	})
 }

@@ -4,10 +4,10 @@ type Template interface {
 	_name() string
 }
 
-type HelloTemplate struct {
+type IndexTemplate struct {
 	Name string
 }
 
-func (h HelloTemplate) _name() string {
-	return "hello.gohtml"
+func (h IndexTemplate) _name() string {
+	return "index.gohtml"
 }

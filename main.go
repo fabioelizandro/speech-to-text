@@ -12,6 +12,7 @@ import (
 	speech "cloud.google.com/go/speech/apiv1"
 	"github.com/fabioelizandro/speech-to-text/stt"
 	"github.com/fabioelizandro/speech-to-text/web"
+	"github.com/fabioelizandro/speech-to-text/webtmpl"
 )
 
 func main() {
@@ -22,7 +23,7 @@ func main() {
 	if *webModeOn {
 		fmt.Println("Web mode on...")
 
-		err := http.ListenAndServe("localhost:8080", web.Router())
+		err := http.ListenAndServe("localhost:8080", web.Router(webtmpl.NewRenderer()))
 		if err != nil {
 			panic(err)
 		}
