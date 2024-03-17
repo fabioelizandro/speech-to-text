@@ -7,7 +7,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func indexRouter(renderer *webtmpl.Renderer) routeWithError {
+func indexRouter(renderer webtmpl.Renderer) routeWithError {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) error {
 		w.Header().Add("Content-Type", "text/html")
 

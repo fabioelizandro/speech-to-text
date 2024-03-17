@@ -23,7 +23,7 @@ func main() {
 	if *webModeOn {
 		fmt.Println("Web mode on...")
 
-		err := http.ListenAndServe("localhost:8080", web.Router(webtmpl.NewRenderer()))
+		err := http.ListenAndServe("localhost:8080", web.Router(renderer()))
 		if err != nil {
 			panic(err)
 		}
@@ -67,4 +67,21 @@ func ensureCacheDir() (string, error) {
 	}
 
 	return appCacheDir, nil
+}
+
+func renderer() webtmpl.Renderer {
+	if envWithDefault("ENV", "dev") == "dev" {
+		return webtmpl.NewFileRenderer()
+	}
+
+	return webtmpl.NewEmbeddedRenderer()
+}
+
+func envWithDefault(key string, def string) string {
+	val, ok := os.LookupEnv(key)
+	if !ok || val == "" {
+		return def
+	}
+
+	return val
 }

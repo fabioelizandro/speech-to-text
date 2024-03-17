@@ -14,7 +14,7 @@ import (
 
 func Test_index_route(t *testing.T) {
 	t.Run("renders hello with user name", func(t *testing.T) {
-		serve := createServer(web.Router(webtmpl.NewRenderer()))
+		serve := createServer(web.Router(webtmpl.NewEmbeddedRenderer()))
 
 		response := serve(httptest.NewRequest("GET", "/", strings.NewReader("")))
 

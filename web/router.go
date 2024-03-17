@@ -8,7 +8,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func Router(renderer *webtmpl.Renderer) http.Handler {
+func Router(renderer webtmpl.Renderer) http.Handler {
 	router := httprouter.New()
 	router.GET("/", handleRouteError(indexRouter(renderer)))
 
