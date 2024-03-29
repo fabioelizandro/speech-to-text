@@ -41,7 +41,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	speechToText := stt.NewCachedSpeechToText(stt.NewSpeechToText(googleSpeech), cacheDir)
+	speechToText := stt.NewCachedSpeechToText(stt.NewGCSpeechToText(googleSpeech), cacheDir)
 	transcript, err := speechToText.Transcript(stt.NewAudioSource(*file))
 	if err != nil {
 		panic(err)
