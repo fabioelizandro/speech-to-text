@@ -4,15 +4,13 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"log"
-	"net/http"
 	"os"
 	"path/filepath"
 
 	speech "cloud.google.com/go/speech/apiv1"
+	"github.com/fabioelizandro/speech-to-text/assert"
 	"github.com/fabioelizandro/speech-to-text/stt"
 	"github.com/fabioelizandro/speech-to-text/web"
-	"github.com/fabioelizandro/speech-to-text/webtmpl"
 )
 
 func main() {
@@ -23,65 +21,29 @@ func main() {
 	if *webModeOn {
 		fmt.Println("Web mode on...")
 
-		err := http.ListenAndServe("localhost:8080", web.Router(renderer()))
-		if err != nil {
-			panic(err)
-		}
-
+		server := web.New("./templates")
+		assert.NoErr(server.Run("localhost:8080"))
 		return
 	}
 
-	cacheDir, err := ensureCacheDir()
-	if err != nil {
-		panic(err)
-	}
+	speechToText := stt.NewCachedSpeechToText(
+		stt.NewGCSpeechToText(
+			assert.Must(speech.NewClient(context.Background())),
+		),
+		ensureCacheDir(),
+	)
 
-	googleSpeech, err := speech.NewClient(context.Background())
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	speechToText := stt.NewCachedSpeechToText(stt.NewGCSpeechToText(googleSpeech), cacheDir)
-	transcript, err := speechToText.Transcript(stt.NewAudioSource(*file))
-	if err != nil {
-		panic(err)
-
-	}
-
+	transcript := assert.Must(speechToText.Transcript(stt.NewAudioSource(*file)))
 	fmt.Printf("\n\n%s\n", transcript.SpeakerDiarization().String())
 }
 
-func ensureCacheDir() (string, error) {
-	userCacheDir, err := os.UserCacheDir()
-	if err != nil {
-		return "", err
-	}
-
+func ensureCacheDir() string {
+	userCacheDir := assert.Must(os.UserCacheDir())
 	appCacheDir := filepath.Join(userCacheDir, "stt-cli")
 
 	if _, err := os.Stat(appCacheDir); os.IsNotExist(err) {
-		err := os.Mkdir(appCacheDir, 0754)
-		if err != nil {
-			return "", err
-		}
+		assert.NoErr(os.Mkdir(appCacheDir, 0754))
 	}
 
-	return appCacheDir, nil
-}
-
-func renderer() webtmpl.Renderer {
-	if envWithDefault("ENV", "dev") == "dev" {
-		return webtmpl.NewFileRenderer()
-	}
-
-	return webtmpl.NewEmbeddedRenderer()
-}
-
-func envWithDefault(key string, def string) string {
-	val, ok := os.LookupEnv(key)
-	if !ok || val == "" {
-		return def
-	}
-
-	return val
+	return appCacheDir
 }

@@ -8,11 +8,11 @@ import (
 )
 
 type CachedSpeechToText struct {
-	underlyingImpl GCSpeechToText
+	underlyingImpl SpeechToText
 	cacheDir       string
 }
 
-func NewCachedSpeechToText(underlyingImpl GCSpeechToText, cacheDir string) *CachedSpeechToText {
+func NewCachedSpeechToText(underlyingImpl SpeechToText, cacheDir string) *CachedSpeechToText {
 	return &CachedSpeechToText{underlyingImpl: underlyingImpl, cacheDir: cacheDir}
 }
 

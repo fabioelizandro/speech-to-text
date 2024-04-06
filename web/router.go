@@ -1,29 +1,51 @@
 package web
 
 import (
-	"fmt"
 	"net/http"
+	"path/filepath"
+	"strings"
 
-	"github.com/fabioelizandro/speech-to-text/webtmpl"
-	"github.com/julienschmidt/httprouter"
+	"github.com/fabioelizandro/speech-to-text/assert"
+	"github.com/gin-contrib/multitemplate"
+	"github.com/gin-gonic/gin"
 )
 
-func Router(renderer webtmpl.Renderer) http.Handler {
-	router := httprouter.New()
-	router.GET("/", handleRouteError(indexRouter(renderer)))
+func New(templatesDir string) *gin.Engine {
+	r := gin.Default()
+	r.HTMLRender = renderer(templatesDir)
 
-	return router
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(200, "index", gin.H{})
+	})
+
+	r.POST("/audio-upload", func(c *gin.Context) {
+		c.Redirect(http.StatusFound, "/audios")
+	})
+
+	r.GET("/audios", func(c *gin.Context) {
+		c.HTML(200, "audios", gin.H{
+			"Files": []string{"file1.txt"},
+		})
+	})
+
+	return r
 }
 
-type routeWithError func(http.ResponseWriter, *http.Request, httprouter.Params) error
+func renderer(templatesDir string) multitemplate.Renderer {
+	r := multitemplate.NewRenderer()
 
-// small interface adaptor so routes can delegate error handling to caller
-func handleRouteError(route routeWithError) httprouter.Handle {
-	return func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
-		err := route(writer, request, params)
-		if err != nil {
-			fmt.Printf("Something went wrong with request: %+v\n", err)
-			writer.WriteHeader(500)
-		}
+	layouts := assert.Must(filepath.Glob(filepath.Join(templatesDir, "/layouts/*.gohtml")))
+	pages := assert.Must(filepath.Glob(filepath.Join(templatesDir, "/pages/*.gohtml")))
+
+	for _, page := range pages {
+		r.AddFromFiles(
+			strings.TrimSuffix(
+				filepath.Base(page),
+				filepath.Ext(page),
+			),
+			append(layouts, page)...,
+		)
 	}
+
+	return r
 }

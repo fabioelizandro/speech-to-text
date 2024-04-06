@@ -1,0 +1,21 @@
+{{- /*gotype: github.com/fabioelizandro/speech-to-text/webtmpl.AudiosTemplate*/ -}}
+
+{{template "_layout.gohtml" .}}
+
+{{define "title"}}Audios{{end}}
+
+{{define "page-title"}}List of all audios{{end}}
+
+{{define "content"}}
+  <ul class="list-none pl-5">
+  {{range .Files}}
+    <li class="mb-2 bg-gray-100 border border-gray-300 rounded-lg p-5 m-3">
+      <span class="text-gray-700 text-lg font-bold">{{.}}</span>
+      <button
+        class="ml-2 px-4 py-2 rounded text-white bg-blue-500 hover:bg-blue-400"
+        onclick="transcribeFunc('{{.}}')"
+      >Transcribe</button>
+    </li>
+  {{end}}
+  </ul>
+{{end}}
