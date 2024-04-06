@@ -6,11 +6,12 @@ import (
 	"strings"
 
 	"github.com/fabioelizandro/speech-to-text/assert"
+	"github.com/fabioelizandro/speech-to-text/store"
 	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
 )
 
-func New(templatesDir string) *gin.Engine {
+func New(templatesDir string, store store.AudioStore) *gin.Engine {
 	r := gin.Default()
 	r.HTMLRender = renderer(templatesDir)
 
@@ -19,12 +20,21 @@ func New(templatesDir string) *gin.Engine {
 	})
 
 	r.POST("/audio-upload", func(c *gin.Context) {
+		file := assert.Must(c.FormFile("audio-file"))
+
+		assert.NoErr(store.SaveAudio(
+			assert.Must(file.Open()),
+			file.Filename,
+		))
+
 		c.Redirect(http.StatusFound, "/audios")
 	})
 
 	r.GET("/audios", func(c *gin.Context) {
+		files := assert.Must(store.ListSavedFiles())
+
 		c.HTML(200, "audios", gin.H{
-			"Files": []string{"file1.txt"},
+			"Files": files,
 		})
 	})
 

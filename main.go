@@ -9,6 +9,7 @@ import (
 
 	speech "cloud.google.com/go/speech/apiv1"
 	"github.com/fabioelizandro/speech-to-text/assert"
+	"github.com/fabioelizandro/speech-to-text/store"
 	"github.com/fabioelizandro/speech-to-text/stt"
 	"github.com/fabioelizandro/speech-to-text/web"
 )
@@ -21,7 +22,7 @@ func main() {
 	if *webModeOn {
 		fmt.Println("Web mode on...")
 
-		server := web.New("./templates")
+		server := web.New("./templates", store.NewInMemoryAudioStore())
 		assert.NoErr(server.Run("localhost:8080"))
 		return
 	}

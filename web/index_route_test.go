@@ -7,13 +7,14 @@ import (
 	"testing"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/fabioelizandro/speech-to-text/store"
 	"github.com/fabioelizandro/speech-to-text/web"
 	"github.com/stretchr/testify/assert"
 )
 
 func Test_index_route(t *testing.T) {
 	t.Run("renders index page with correct title", func(t *testing.T) {
-		serve := web.New("../templates")
+		serve := web.New("../templates", store.NewInMemoryAudioStore())
 
 		response := httptest.NewRecorder()
 		serve.ServeHTTP(response, httptest.NewRequest("GET", "/", strings.NewReader("")))
